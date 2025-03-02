@@ -5,11 +5,11 @@ $allData['status'] = 'success';
 $category_id =  filterRequest("categoryid");
 // $items =  getAllData('items', "items_categories = $category_id");
 $userId = filterRequest("userid");
-$stmt = $conn->prepare("SELECT itemsview.* , 1 AS favorite FROM itemsview
+$stmt = $conn->prepare("SELECT itemsview.* , 1 AS favorite , (items_price - (items_price * items_discount / 100)) as itempricediscount FROM itemsview
 INNER JOIN favorite ON favorite.favorite_itemsid = itemsview.items_id AND favorite.favorite_usersid = $userId
 WHERE items_categories = $category_id
 UNION ALL 
-SELECT * , 0 AS favorite FROM itemsview
+SELECT * , 0 AS favorite , (items_price - (items_price * items_discount / 100)) as itempricediscount FROM itemsview
 WHERE items_categories = $category_id AND items_id NOT IN (SELECT itemsview.items_id FROM itemsview
 INNER JOIN favorite ON favorite.favorite_itemsid = itemsview.items_id AND favorite.favorite_usersid = $userId)");
 
